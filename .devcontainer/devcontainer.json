@@ -1,0 +1,20 @@
+{
+    "name": "K3s Manager",
+    "dockerFile": "Dockerfile",
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-kubernetes-tools.vscode-kubernetes-tools"
+            ]
+        }
+    },
+    "postCreateCommand": "kubectl version --client",
+    "runArgs": [
+        // Mount the local kubeconfig file into the container
+        "-v", "${env:HOME}/.kube/config:/home/user/.kube/config:ro"
+    ],
+    "containerEnv": {
+        // Set the KUBECONFIG environment variable to point to the mounted file
+        "KUBECONFIG": "/home/user/.kube/config"
+    }
+}
