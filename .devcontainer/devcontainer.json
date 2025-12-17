@@ -1,20 +1,162 @@
 {
-    "name": "K3s Manager",
-    "dockerFile": "Dockerfile",
-    "customizations": {
-        "vscode": {
-            "extensions": [
-                "ms-kubernetes-tools.vscode-kubernetes-tools"
-            ]
-        }
+  "name": "k3s Management Container",
+  "dockerFile": "Dockerfile",
+  "features": {
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": "false",
+      "installOhMyZsh": "false",
+      "installSsl": "false",
+      "username": "vscode",
+      "userUid": "1000",
+      "userGid": "1000",
+      "upgradePackages": "true"
     },
-    "postCreateCommand": "kubectl version --client",
-    "runArgs": [
-        // Mount the local kubeconfig file into the container
-        "-v", "${env:HOME}/.kube/config:/home/user/.kube/config:ro"
-    ],
-    "containerEnv": {
-        // Set the KUBECONFIG environment variable to point to the mounted file
-        "KUBECONFIG": "/home/user/.kube/config"
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "dockerDashComposeVersion": "v2"
+    },
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest",
+      "ppa": "false"
+    },
+    "ghcr.io/joechandler73/devcontainer-features/common-dev-tools:latest": {},
+    "ghcr.io/joechandler73/devcontainer-features/kubectl-k9s:latest": {
+      "kubectlVersion": "latest",
+      "k9sVersion": "latest",
+      "installKubectx": true
+    },
+    "ghcr.io/joechandler73/devcontainer-features/starship-nerd-font:latest": {
+      "nerdFont": "IBMPlexMono",
+      "starshipPreset": "no-runtime-versions",
+      "fontVersion": "v3.4.0"
     }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Kubernetes
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        // Docker
+        "ms-azuretools.vscode-docker",
+        // Git
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+        // Productivity
+        "PKief.material-icon-theme",
+        "dbaeumer.vscode-eslint",
+        "editorconfig.editorconfig",
+        "streetsidesoftware.code-spell-checker",
+        // YAML/JSON
+        "redhat.vscode-yaml",
+        "tamasfe.even-better-toml"
+      ],
+      "settings": {
+        // Editor
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll": "explicit",
+          "source.organizeImports": "explicit"
+        },
+        "editor.rulers": [
+          120
+        ],
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true,
+        "editor.detectIndentation": false,
+        // Terminal
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.fontSize": 14,
+        "terminal.integrated.fontFamily": "BlexMono Nerd Font, monospace",
+        "terminal.integrated.cursorStyle": "line",
+        "terminal.integrated.scrollback": 10000,
+        // Git
+        "git.autofetch": true,
+        "git.confirmSync": false,
+        "git.enableSmartCommit": true,
+        "git.pruneOnFetch": true,
+        "gitlens.telemetry.enabled": false,
+        // Files
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true,
+        "files.exclude": {
+          "**/bin": true,
+          "**/obj": true,
+          "**/.vs": true
+        },
+        "files.watcherExclude": {
+          "**/bin/**": true,
+          "**/obj/**": true,
+          "**/node_modules/**": true,
+          "**/.git/objects/**": true,
+          "**/.git/subtree-cache/**": true
+        },
+        // JSON/YAML
+        "[json]": {
+          "editor.defaultFormatter": "vscode.json-language-features",
+          "editor.tabSize": 2
+        },
+        "[jsonc]": {
+          "editor.defaultFormatter": "vscode.json-language-features",
+          "editor.tabSize": 2
+        },
+        "[yaml]": {
+          "editor.tabSize": 2,
+          "editor.insertSpaces": true
+        },
+        // Docker
+        "docker.showStartPage": false,
+        // Kubernetes
+        "vs-kubernetes": {
+          "vs-kubernetes.helm-path.linux": "/usr/local/bin/helm",
+          "vs-kubernetes.kubectl-path.linux": "/usr/local/bin/kubectl"
+        },
+        // UI
+        "workbench.iconTheme": "material-icon-theme",
+        "workbench.startupEditor": "none",
+        "breadcrumbs.enabled": true,
+        // Telemetry
+        "telemetry.telemetryLevel": "off"
+      }
+    }
+  },
+  "postCreateCommand": "",
+  "postStartCommand": "",
+  "mounts": [
+    // Kubernetes config
+    {
+      "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.kube",
+      "target": "/home/vscode/.kube",
+      "type": "bind"
+    },
+    // Git config
+    {
+      "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.gitconfig",
+      "target": "/home/vscode/.gitconfig",
+      "type": "bind"
+    },
+    // SSH keys
+    {
+      "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.ssh",
+      "target": "/home/vscode/.ssh",
+      "type": "bind"
+    },
+    // AWS credentials (if needed)
+    //{
+    //    "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.aws",
+    //    "target": "/home/vscode/.aws",
+    //    "type": "bind"
+    //},
+    // Docker config (for registry auth)
+    {
+      "source": "${localEnv:HOME}${localEnv:USERPROFILE}/.docker",
+      "target": "/home/vscode/.docker-host",
+      "type": "bind"
+    }
+  ],
+  "containerEnv": {
+    "KUBECONFIG": "/home/vscode/.kube/config"
+  },
+  "remoteUser": "vscode",
+  "waitFor": "postCreateCommand"
 }
