@@ -91,6 +91,9 @@
           "**/.git/objects/**": true,
           "**/.git/subtree-cache/**": true
         },
+        "[github-actions-workflow]": {
+          "editor.autoIndent": "advanced"
+        },
         // JSON/YAML
         "[json]": {
           "editor.defaultFormatter": "vscode.json-language-features",
@@ -101,11 +104,16 @@
           "editor.tabSize": 2
         },
         "[yaml]": {
+          "editor.defaultFormatter": "redhat.vscode-yaml",
+          "editor.autoIndent": "advanced",
           "editor.tabSize": 2,
           "editor.insertSpaces": true
         },
         // Docker
         "docker.showStartPage": false,
+        "[dockercompose]": {
+          "editor.autoIndent": "advanced"
+        },
         // Kubernetes
         "vs-kubernetes": {
           "vs-kubernetes.helm-path.linux": "/usr/local/bin/helm",
